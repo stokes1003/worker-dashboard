@@ -12,6 +12,7 @@ import {
   SimpleGrid,
 } from "@mantine/core";
 import { Worker } from "../types/worker";
+import { parseNaturalLanguageQuery } from "../utils/naturalLanguageFilter";
 
 interface SearchFilters {
   query: string;
@@ -88,16 +89,28 @@ export const SearchBar = ({ onSearch, workers, onReset }: SearchBarProps) => {
   const uniqueSuggestions = [...new Set(searchSuggestions)].sort();
 
   const handleSearch = () => {
-    onSearch({
-      query,
-      certifications: selectedCertifications,
-      skills: selectedSkills,
-      minExperience,
-      maxExperience,
-      minHourlyRate,
-      maxHourlyRate,
-      availability: selectedAvailability,
-    });
+    // Check if the query looks like a natural language query
+    const isNaturalLanguage =
+      query.includes(" ") &&
+      (query.toLowerCase().includes("year") ||
+        query.toLowerCase().includes("experience") ||
+        query.toLowerCase().includes("available"));
+
+    if (isNaturalLanguage) {
+      const filters = parseNaturalLanguageQuery(query);
+      onSearch(filters);
+    } else {
+      onSearch({
+        query,
+        certifications: selectedCertifications,
+        skills: selectedSkills,
+        minExperience,
+        maxExperience,
+        minHourlyRate,
+        maxHourlyRate,
+        availability: selectedAvailability,
+      });
+    }
   };
 
   const handleReset = () => {

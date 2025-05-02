@@ -28,3 +28,14 @@ export interface Worker {
   hourlyRate: number;
   availability: string[];
 }
+
+export interface SearchFilters {
+  query: string;
+  certifications: string[];
+  skills: string[];
+  minExperience: number;
+  maxExperience: number;
+  minHourlyRate: number;
+  maxHourlyRate: number;
+  availability: string[];
+}
